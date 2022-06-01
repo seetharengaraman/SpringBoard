@@ -1,0 +1,48 @@
+Monthly Fee	$4 	 No min balance or no direct deposit setup
+Out of Network ATM	2.5 per transaction	
+Excess Transactions per month above 5 withdrawals or transfers in savings	$3 per transaction	
+OverDraft Coverage/Protection Fee	35 per transaction	
+Insufficient Funds fee	35 per transaction	
+Early Account closing	$25 	
+
+
+{
+  "Currency":"USD",
+  "MonthlyFee":4,
+  "ExcessWithdrawalsOrTransferOutside":3,
+  "ATMWithdrawalFeeOutNetwork":2.5,
+  "AllowedATMWithdrawals":5,
+  "AllowedTransactions":7,
+  "OverDraftCoverageFee":35,
+  "EarlyAccountClosing":25,
+  "EarlyAccountClosingPeriodInDays":30,
+  "InsufficientFunds":35
+}
+
+{
+  "Currency":"USD",
+  "MonthlyFee":0,
+  "ExcessWithdrawalsOrTransferOutside":3,
+  "ATMWithdrawalFeeOutNetwork":2.5,
+  "AllowedATMWithdrawals":2,
+  "AllowedTransactions":3,
+  "OverDraftCoverageFee":35,
+  "EarlyAccountClosing":25,
+  "EarlyAccountClosingPeriodInDays":30,
+  "InsufficientFunds":35
+}
+
+	Car	Business	Home	Personal	
+Loan Cost	0.01%	0.01%	0.01%	0.01%	of principal
+Late Fee	0.01%	0.01%	0.01%	0.01%	of EMI
+Prepayment fees	0.01%	0.01%	0.01%	0.01%	of remaining amount
+(Early Loan Payoff Fees	less than 5 yrs for mortgage, less than 3 months for others)				
+
+{
+   "Currency":"USD",
+   "LoanCost":0.02,
+   "LateFee":1,
+   "PrepaymentFee":0.01,
+   "PrepaymentTermInMonths":3
+
+}
