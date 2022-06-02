@@ -87,7 +87,7 @@ class BankSetup:
                     Column('State',String(100),nullable=True),
                     Column('PostalCode',String(50),nullable=False),
                     Column('Country',String(50),nullable=False),
-                    Column('CustomerType',Enum('Individual','Business')),
+                    Column('CustomerType',Enum('Individual','Business'),nullable=True),
                     Column('CompanyName',String(200),nullable=True),
                     Column('PersonalBankerId',String(20),ForeignKey('Employees.Id'),nullable=True),
                     Column('CreatedTime',TZDateTime,server_default=func.now()),

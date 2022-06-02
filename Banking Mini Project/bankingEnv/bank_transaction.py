@@ -241,7 +241,7 @@ class AccountTransaction(BankTransaction):
         
 c = AccountTransaction('AS00000002','AS0002','E000000002','C000000002',430)
 c.withdraw_amount(1000)
-#c.calculate_interest()
+c.calculate_interest()
 #c.calculate_fees('AS0002',8)
 #c.get_current_balance()
 
