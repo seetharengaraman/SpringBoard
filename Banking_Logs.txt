@@ -1,0 +1,3 @@
+2022-06-01 12:32:24 bank_transaction root.__init__ +44: INFO [99314] Customer Account Exists
+2022-06-01 12:32:24 bank_transaction root.withdraw_amount +107: INFO [99314] Withdraw Successful. Inserted Rowcount:2
+2022-06-01 13:21:34 bank_transaction root.__init__ +44: INFO [1249] Customer Account Exists

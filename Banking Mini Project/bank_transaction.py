@@ -156,7 +156,8 @@ class AccountTransaction(BankTransaction):
     def __init__(self,account_id,service_id,employee_id='SystemAdmin',customer_id='0',credit_score=0,account_type='Checking'):
         BankTransaction.__init__(self,account_id,account_type,employee_id,customer_id,credit_score)    
         self.service_id = service_id
-        self.service_terms = AccountTransaction.get_service_terms(self.db_engine,service_id)
+        self.service_terms = BankTransaction.get_service_terms(self.db_engine,service_id)
+        BankTransaction.get_current_balance(self)
         logging.info(f"Checking or Savings Account Transaction Initiated for Account:{self.account_id}")
     
     @staticmethod    
@@ -198,7 +199,6 @@ class AccountTransaction(BankTransaction):
 
     def calculate_interest(self):
         try:
-            AccountTransaction.get_current_balance(self)
             if not self.balance_result[0]['interest_indicator']:
                 self.interest = self.service_terms[0]['InterestRate']*self.balance_result[0]['current_balance']/100
                 print(f"Interest calculated is:{self.interest}")
@@ -214,6 +214,7 @@ class AccountTransaction(BankTransaction):
                 if self.interest > 0.00:
                     transaction_notes = "Amount deposited With Interest for quarter"
             BankTransaction.deposit_amount(self,amount+self.interest, self.service_id,transaction_notes)
+            AccountTransaction.withdraw_amount(self,0.00)
         except Exception as e:
             logging.error(e,exc_info=True)
 
@@ -221,12 +222,16 @@ class AccountTransaction(BankTransaction):
         try:
             AccountTransaction.get_transaction_detail(self.db_engine,self.account_id)
             AccountTransaction.calculate_fees(self,self.service_id,transaction_dict['number_of_transactions']) 
-            if transaction_dict['withdrawal_amount'] <= amount + self.service_terms[0]['WithdrawalLimitPerDay']:
-                BankTransaction.withdraw_amount(self,amount, self.service_id)
+            total_fees = sum([x for x in self.fee_dict.values()])
+            if self.balance_result[0]['current_balance'] >= amount + total_fees:
+                if transaction_dict['withdrawal_amount'] + amount <= self.service_terms[0]['WithdrawalLimitPerDay']:
+                    BankTransaction.withdraw_amount(self,amount, self.service_id)
+                else:
+                    logging.info(f"Withdraw UnSuccessful. Amount to be withdrawn greater than withdrawal limit for the day")
+                    print(f"${amount} greater than withdrawal limit for the day")
+                {BankTransaction.withdraw_amount(self,j, self.service_id,i) for i,j in self.fee_dict.items()}
             else:
-                logging.info(f"Withdraw UnSuccessful. Amount to be withdrawn greater than withdrawal limit for the day")
-                print(f"${amount} greater than withdrawal limit for the day")
-            {BankTransaction.withdraw_amount(self,j, self.service_id,i) for i,j in self.fee_dict.items()}
+                print(f"Insufficient funds. Current Balance available:{self.balance_result[0]['current_balance']}")
         except Exception as e:
             logging.error(e,exc_info=True)
         
@@ -240,8 +245,8 @@ class AccountTransaction(BankTransaction):
 
         
 c = AccountTransaction('AS00000002','AS0002','E000000002','C000000002',430)
-c.withdraw_amount(1000)
-c.calculate_interest()
+c.deposit_amount(5000)
+#c.calculate_interest()
 #c.calculate_fees('AS0002',8)
 #c.get_current_balance()
 
