@@ -117,11 +117,9 @@ class BankSetup:
                 Column('MinimumLoanAmount',Float,nullable=False),
                 Column('MaximumLoanAmount',Float,nullable=False),
                 Column('InterestRate',Float,nullable=False),
-                Column('Period',Integer,nullable=False),
-                Column('PeriodType',Enum('Days','Months','Years'),nullable=False),
+                Column('PeriodInMonths',Integer,nullable=False),
                 Column('LoanCostPercentage',Float,server_default="0.01",nullable=False),
-                Column('MinimumMonthsBeforePrepayment',Integer,server_default="1",nullable=False),
-                Column('PrepaymentFeePercentage',Float,server_default="0.01",nullable=False),
+                Column('LateFee',Float,server_default="0.00",nullable=False),
                 Column('CreatedTime',TZDateTime,server_default=func.now()),
                 Column('UpdatedTime',TZDateTime,server_default=func.now()),
                 Column('CreatedBy',String(20),ForeignKey('Employees.Id'),nullable=False),
@@ -175,7 +173,7 @@ class BankSetup:
     def insert_data(self,
                     table_name,
                     db_engine,
-                    data_file = '/Users/renga/Documents/SpringBoard Data Engineering Course/SpringBoard/Banking Mini Project/bankingEnv/data/BankingData.xlsx'):
+                    data_file = '/Users/renga/Documents/SpringBoard Data Engineering Course/bankingEnv/data/BankingData.xlsx'):
         try:            
             df = pd.read_excel(data_file,index_col=0,sheet_name=table_name) 
             print(df.head())
