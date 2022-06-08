@@ -53,6 +53,7 @@ class BankSetup:
     
     def database_setup(self):
         try:
+            self.get_connection()
             with self.db_engine.connect() as conn:
                 result_set = conn.execute(sql.text("select 'Connected to create tables!'"))
                 logging.info(*result_set.fetchmany(1)[0])
@@ -126,21 +127,6 @@ class BankSetup:
                 Column('UpdatedBy',String(20),ForeignKey('Employees.Id'),nullable=False)
                 )
 
-            CreditCardServices = Table('CreditCardServices',metadata_obj,
-                Column('CreditCardServiceId',String(10),primary_key=True),
-                Column('ServiceType',Enum('Visa','MasterCard')),
-                Column('MaximumCreditLimit',Float,nullable=False),
-                Column('MinimumCreditScore',Integer,server_default="0",nullable=False),
-                Column('OneYearSecurityDeposit',Float,server_default="0.00",nullable=False),
-                Column('InterestRate',Float,nullable=False),
-                Column('YearlyFees',Float,server_default="0.00",nullable=False),
-                Column('WithdrawalLimitPerDay',Float,server_default="0.00",nullable=False),
-                Column('CreatedTime',TZDateTime,server_default=func.now()),
-                Column('UpdatedTime',TZDateTime,server_default=func.now()),
-                Column('CreatedBy',String(20),ForeignKey('Employees.Id'),nullable=False),
-                Column('UpdatedBy',String(20),ForeignKey('Employees.Id'),nullable=False)
-                        )
-
             CustomerAccountSummary = Table('CustomerAccountSummary',metadata_obj,
                                             Column('AccountId',String(30),primary_key=True),
                                             Column('CustomerId',String(20),ForeignKey('Customers.CustomerId'),nullable=False),
@@ -186,8 +172,8 @@ class BankSetup:
             table_exists = conn.execute(sql.text("SELECT COUNT(*) "
                                                     "FROM information_schema.tables " 
                                                     "WHERE table_name IN "
-                                                    "('Customers','Employees','CreditCardServices',"
-                                                    "'LoanServices','AccountServices','CustomerAccountSummary',"
+                                                    "('Customers','Employees','LoanServices',"
+                                                    "'AccountServices','CustomerAccountSummary',"
                                                     "'CustomerAccountDetail')"))
             return table_exists.scalar()
     
@@ -259,11 +245,15 @@ class BankTransactionStore(BankSetup):
         except Exception as e:
             logging.error(e,exc_info=True)
     
-    def get_account_service(self,service_id):
+    def get_service_terms(self,service_id,service_type ='Account'):
         try:
             with self.db_engine.connect() as conn:
-                terms_stmt = sql.text("SELECT * FROM AccountServices WHERE AccountServiceId = :AccountServiceId")
-                return conn.execute(terms_stmt,{"AccountServiceId":service_id}).fetchall()
+                if service_type == 'Account':
+                    terms_stmt = sql.text("SELECT * FROM AccountServices WHERE AccountServiceId = :AccountServiceId")
+                    return conn.execute(terms_stmt,{"AccountServiceId":service_id}).fetchall()
+                if service_type == 'Loan':
+                    terms_stmt = sql.text("SELECT * FROM LoanServices WHERE LoanServiceId = :LoanServiceId")
+                    return conn.execute(terms_stmt,{"LoanServiceId":service_id}).fetchall()
         except Exception as e:
             logging.error(e,exc_info=True) 
 
@@ -307,13 +297,6 @@ class BankTransactionStore(BankSetup):
         except Exception as e:
             logging.error(e,exc_info=True)  
 
-    def get_loan_service(self,service_id):
-        try:
-            with self.db_engine.connect() as conn:
-                terms_stmt = sql.text("SELECT * FROM LoanServices WHERE LoanServiceId = :LoanServiceId")
-                return conn.execute(terms_stmt,{"LoanServiceId":service_id}).fetchall()
-        except Exception as e:
-            logging.error(e,exc_info=True) 
 
         
           

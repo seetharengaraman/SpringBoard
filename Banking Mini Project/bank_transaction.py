@@ -27,13 +27,12 @@ class BankTransaction:
             if table_exists < 7:
                 bank_setup.database_setup()
                 if mass_insert:
-                    bank_setup.mass_insert('Employees',self.db_engine)
-                    bank_setup.mass_insert('Customers',self.db_engine)
-                    bank_setup.mass_insert('AccountServices',self.db_engine)
-                    bank_setup.mass_insert('LoanServices',self.db_engine)
-                    bank_setup.mass_insert('CreditCardServices',self.db_engine)
-                    bank_setup.mass_insert('CustomerAccountSummary',self.db_engine)
-                    bank_setup.mass_insert('CustomerAccountDetail',self.db_engine)
+                    bank_setup.mass_insert('Employees')
+                    bank_setup.mass_insert('Customers')
+                    bank_setup.mass_insert('AccountServices')
+                    bank_setup.mass_insert('LoanServices')
+                    bank_setup.mass_insert('CustomerAccountSummary')
+                    bank_setup.mass_insert('CustomerAccountDetail')
                 logging.info("Banking Database Setup completed")
             else:
                 account_exists = bank_store.check_if_account_exists(self.account_id)
@@ -85,27 +84,28 @@ class BankTransaction:
             self.current_balance = balance_result[0]['current_balance']
             self.transaction_time = balance_result[0]['transaction_time']
             self.interest_indicator = balance_result[0]['interest_indicator']
-            print(f"{self.customer_name} with Account Id {self.account_id} has current balance ${self.current_balance}.Original Balance was ${self.original_balance}")   
             logging.info(f"Obtained Balances:{balance_result[0]}") 
-
         else:
-            
-            self.original_balance = 0.00
-            self.current_balance = 0.00
-            self.interest_indicator = 0
-            print(f"Account {self.account_id} Does Not Exist")
+            balance_result[0]['original_balance'] = 0.00
+            balance_result[0]['current_balance'] = 0.00
+            balance_result[0]['interest_indicator'] = 0
+            self.original_balance = balance_result[0]['original_balance']
+            self.current_balance = balance_result[0]['current_balance']
+            self.interest_indicator = balance_result[0]['interest_indicator']
             logging.info(f"Account {self.account_id} Does Not Exist") 
-        
+        return balance_result[0]
 
 class AccountTransaction(BankTransaction):
 
     def __init__(self,account_id,service_id,employee_id='SystemAdmin',customer_id='0',credit_score=0,account_type='Checking'):
+        global transaction_dict
+        transaction_dict = {}
         global bank_transact
         bank_transact = BankTransaction(account_id,account_type,employee_id,customer_id,credit_score)    
         self.service_id = service_id
         try:
             if account_type in ('Checking','Savings'):
-                self.service_terms = bank_store.get_account_service(self.service_id)
+                self.service_terms = bank_store.get_service_terms(self.service_id,'Account')
                 if self.service_terms[0]['ServiceType'] != self.account_type:
                     print(f"Service Id Type {self.service_terms[0]['ServiceType']} does not match Account Type {self.account_type}")
                     logging.info(f"Service Id Type {self.service_terms[0]['ServiceType']} does not match Account Type {self.account_type}")
@@ -150,7 +150,6 @@ class AccountTransaction(BankTransaction):
     def withdraw_amount(self, amount):
         try:
             total_fees=0
-            transaction_dict = {}
             transaction_dict = bank_store.get_account_detail(self.account_id,'Account')
             self.calculate_fees(self.service_id,transaction_dict['number_of_transactions']) 
             total_fees = sum([x for x in self.fee_dict.values()])
@@ -174,7 +173,7 @@ class LoanTransaction(AccountTransaction):
     def __init__(self,account_id,service_id,employee_id='SystemAdmin',customer_id='0',credit_score=0,amount=0.00,account_type='Car Loan'):
         account_transact = AccountTransaction(account_id,service_id,employee_id,customer_id,credit_score,account_type)    
         try:
-            self.service_terms = bank_store.get_loan_service(self.service_id)
+            self.service_terms = bank_store.get_service_terms(self.service_id,'Loan')
             if self.service_terms[0]['ServiceType'] != self.account_type:
                 print(f"Service Id Type {self.service_terms[0]['ServiceType']} does not match Account Type {self.account_type}")
                 logging.info(f"Service Id Type {self.service_terms[0]['ServiceType']} does not match Account Type {self.account_type}")
@@ -235,7 +234,7 @@ class LoanTransaction(AccountTransaction):
 #d = datetime.datetime.strftime(datetime.datetime.strptime('2022-06-02 14:59:56','%Y-%m-%d %H:%M:%S'),'%m')
 #print(int(d))           
 
-#a = BankTransaction('Test',mass_insert=True)
+a = BankTransaction('Test',mass_insert=True)
 
 
 
