@@ -2,10 +2,12 @@
 """
  This module takes care of setting up Banking 
  Database,creating necessary tables to host employees,
- customers, Loan, Credit Card, Account services, Customer 
+ customers, Loan services, Account services, Customer 
  Account Summary and Account Detail and method to mass 
  insert data from an excel file. It also sets up basic
- logging configuration.
+ logging configuration. It is also a transaction store
+ that allows to query account details as well as saving
+ deposit and withdrawal transactions.
 """
 import sqlalchemy as sql
 from sqlalchemy import *
@@ -161,13 +163,13 @@ class BankSetup:
                     data_file = '/Users/renga/Documents/SpringBoard Data Engineering Course/bankingEnv/data/BankingData.xlsx'):
         try:            
             df = pd.read_excel(data_file,index_col=0,sheet_name=table_name) 
-            print(df.head())
+           ## print(df.head())
             df.to_sql(table_name,self.db_engine,if_exists='append')
         except Exception as e:
             logging.error(e,exc_info=True)
     
     def verify_database_setup(self):
-        BankSetup.get_connection(self)
+        self.get_connection()
         with self.db_engine.connect() as conn:
             table_exists = conn.execute(sql.text("SELECT COUNT(*) "
                                                     "FROM information_schema.tables " 
@@ -175,11 +177,11 @@ class BankSetup:
                                                     "('Customers','Employees','LoanServices',"
                                                     "'AccountServices','CustomerAccountSummary',"
                                                     "'CustomerAccountDetail')"))
-            return table_exists.scalar()
+            return table_exists.scalar(),self.db_engine
     
-class BankTransactionStore(BankSetup):
-    def __init__(self):
-        bank_setup = BankSetup()
+class BankTransactionStore:
+    def __init__(self,db_engine):
+        self.db_engine = db_engine
 
     def check_if_account_exists(self, account_id):
         with self.db_engine.connect() as conn:
@@ -245,6 +247,26 @@ class BankTransactionStore(BankSetup):
         except Exception as e:
             logging.error(e,exc_info=True)
     
+    def get_transaction_detail(self,account_id,number_of_transactions=5):
+        try:
+            with self.db_engine.connect() as conn:
+                account_stmt = sql.text("SELECT cas.AccountId AS account_id,cas.CustomerId AS customer_id,cas.AccountType,abs(cas.OriginalBalance) AS original_balance,"
+                                               "round(abs(cad.DepositAmount-cad.WithdrawAmount),2) AS current_balance "
+                                               "FROM CustomerAccountSummary cas INNER JOIN (SELECT AccountId,COALESCE(SUM(WithdrawalAmount),0.00) AS WithdrawAmount,"
+                                               "COALESCE(SUM(DepositAmount),0.00) AS DepositAmount "
+                                                       "FROM CustomerAccountDetail "
+                                                    "GROUP BY AccountId) cad ON cas.AccountId = cad.AccountId "
+                                        "WHERE cas.AccountId =:AccountId")
+                summary_data = conn.execute(account_stmt,{"AccountId":account_id}).fetchall() 
+                detail_stmt = sql.text("SELECT TransactionTime AS transaction_time,WithdrawalAmount AS withdraw_amount,DepositAmount AS deposit_amount,TransactionNotes AS transaction_notes "
+                                               "FROM CustomerAccountDetail "
+                                               "WHERE AccountId =:AccountId "
+                                               "ORDER BY TransactionTime DESC")
+                detail_data = conn.execute(detail_stmt,{"AccountId":account_id}).fetchmany(number_of_transactions)
+            return summary_data,detail_data   
+        except Exception as e:
+            logging.error(e,exc_info=True)
+    
     def get_service_terms(self,service_id,service_type ='Account'):
         try:
             with self.db_engine.connect() as conn:
@@ -278,13 +300,13 @@ class BankTransactionStore(BankSetup):
                                                   "AND month(TransactionTime) = month(SYSDATE()) "
                                                   "AND TransactionNotes Like '%Monthly Fee%' ")
                     account_detail['monthly_fee'] = conn.execute(monthly_fee_stmt,{"AccountId":account_id}).scalar()
+                if service_type =='Loan':
                     monthly_payment_stmt = sql.text("SELECT sum(DepositAmount) "
                                                  "FROM CustomerAccountDetail "
                                                 "WHERE AccountId = :AccountId "
                                                   "AND month(TransactionTime) = month(SYSDATE())-1 "
                                                   "AND TransactionNotes Like '%Monthly%' "
                                                   "GROUP BY month(TransactionTime)")
-                if service_type =='Loan':
                     account_detail['monthly_payment'] = conn.execute(monthly_payment_stmt,{"AccountId":account_id}).scalar()
                     principal_stmt = sql.text("SELECT sum(DepositAmount) "
                                                     "FROM CustomerAccountDetail "
@@ -304,6 +326,7 @@ class BankTransactionStore(BankSetup):
 
     
         
+
 
 
 

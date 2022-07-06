@@ -2,15 +2,16 @@
 """
 This module is to perform various bank transactions like 
 creating new checking/savings account,deposits and withdrawals
-to and from checking/savings account, obtaining new loan, 
-paying EMI for loan,obtaining new credit card, 
-paying off credit card balance along with relevant fees
+to and from checking/savings account, obtaining new loan and 
+paying EMI for loan along with relevant fees
 and penalties.
 """
 import setup.bank_data_store as bs
 import logging
 import sqlalchemy as sql
 import datetime
+import pandas as pd
+from tabulate import tabulate
 
 class BankTransaction:
     def __init__(self,account_id,account_type='Inquiry',employee_id='SystemAdmin',customer_id='0',credit_score=0,mass_insert=False):
@@ -22,9 +23,9 @@ class BankTransaction:
             self.employee_id = employee_id     
             global bank_setup,bank_store 
             bank_setup = bs.BankSetup()   
-            bank_store = bs.BankTransactionStore()    
-            table_exists = bank_setup.verify_database_setup()
-            if table_exists < 7:
+            table_exists,db_engine = bank_setup.verify_database_setup()
+            bank_store = bs.BankTransactionStore(db_engine)    
+            if table_exists < 6:
                 bank_setup.database_setup()
                 if mass_insert:
                     bank_setup.mass_insert('Employees')
@@ -76,7 +77,7 @@ class BankTransaction:
             except Exception as e:
                 logging.error(e,exc_info=True)
 
-    def get_current_balance(self):
+    def get_current_balance(self,print_indicator=False):
         if not self.new_account_indicator:
             balance_result = bank_store.get_account_summary(self.account_id)
             self.customer_name = balance_result[0]['customer_name']
@@ -86,22 +87,31 @@ class BankTransaction:
             self.interest_indicator = balance_result[0]['interest_indicator']
             logging.info(f"Obtained Balances:{balance_result[0]}") 
         else:
-            balance_result[0]['original_balance'] = 0.00
-            balance_result[0]['current_balance'] = 0.00
-            balance_result[0]['interest_indicator'] = 0
-            self.original_balance = balance_result[0]['original_balance']
-            self.current_balance = balance_result[0]['current_balance']
-            self.interest_indicator = balance_result[0]['interest_indicator']
+            self.original_balance = 0.00
+            self.current_balance = 0.00
+            self.interest_indicator = 0
             logging.info(f"Account {self.account_id} Does Not Exist") 
-        return balance_result[0]
+        if print_indicator:
+            if self.current_balance > 0:
+                print(f"Current Balance for {self.account_id} is {self.current_balance}")
+            else:
+                print(f"Current Balance for {self.account_id} is {-self.current_balance}")
+    
+    def get_latest_transactions(self,number_of_transactions=5):
+        summary,detail = bank_store.get_transaction_detail(self.account_id,number_of_transactions)
+        summary_df = pd.DataFrame(summary, columns=summary[0].keys())
+        detail_df = pd.DataFrame(detail, columns=detail[0].keys())
+        print(tabulate(summary_df, headers='keys', tablefmt='psql', showindex=False))
+        print(tabulate(detail_df, headers='keys', tablefmt='psql', showindex=False))
+        
+
 
 class AccountTransaction(BankTransaction):
 
     def __init__(self,account_id,service_id,employee_id='SystemAdmin',customer_id='0',credit_score=0,account_type='Checking'):
         global transaction_dict
         transaction_dict = {}
-        global bank_transact
-        bank_transact = BankTransaction(account_id,account_type,employee_id,customer_id,credit_score)    
+        BankTransaction.__init__(self,account_id,account_type,employee_id,customer_id,credit_score)   
         self.service_id = service_id
         try:
             if account_type in ('Checking','Savings'):
@@ -110,7 +120,7 @@ class AccountTransaction(BankTransaction):
                     print(f"Service Id Type {self.service_terms[0]['ServiceType']} does not match Account Type {self.account_type}")
                     logging.info(f"Service Id Type {self.service_terms[0]['ServiceType']} does not match Account Type {self.account_type}")
                 logging.info(f"Checking or Savings Account Transaction Initiated for Account:{self.account_id}")
-            bank_transact.get_current_balance(self)
+            self.get_current_balance()
         except Exception as e:
             logging.error(e,exc_info=True)      
 
@@ -134,7 +144,7 @@ class AccountTransaction(BankTransaction):
         except Exception as e:
             logging.error(e,exc_info=True)
 
-    def deposit_amount(self, amount):
+    def deposit(self, amount):
         try:    
             self.interest=0.00
             transaction_notes = None
@@ -142,21 +152,24 @@ class AccountTransaction(BankTransaction):
                 self.calculate_interest()
                 if self.interest > 0.00:
                     transaction_notes = "Amount deposited With Interest for quarter"
-            bank_transact.deposit_amount(amount+self.interest, self.service_id,transaction_notes)
+                else:
+                    self.interest = 0.00
+            self.deposit_amount(amount+self.interest, self.service_id,transaction_notes)
             self.withdraw_amount(0.00)
         except Exception as e:
             logging.error(e,exc_info=True)
 
-    def withdraw_amount(self, amount):
+    def withdraw(self, amount):
         try:
             total_fees=0
             transaction_dict = bank_store.get_account_detail(self.account_id,'Account')
             self.calculate_fees(self.service_id,transaction_dict['number_of_transactions']) 
             total_fees = sum([x for x in self.fee_dict.values()])
-            print(f"Current Balance:{self.current_balance} Withdraw Amount and Fees: {amount + total_fees}")
-            if self.current_balance > 0 and self.current_balance >= amount + total_fees:
+            total_withdraw_amount = amount + total_fees
+            print(f"Current Balance:{self.current_balance} Withdraw Amount and Fees: {total_withdraw_amount}")
+            if self.current_balance > 0 and self.current_balance >= total_withdraw_amount:
                 if transaction_dict['withdrawal_amount'] + amount <= self.service_terms[0]['WithdrawalLimitPerDay']:
-                    bank_transact.withdraw_amount(amount, self.service_id)
+                    self.withdraw_amount(amount, self.service_id)
                 else:
                     logging.info(f"Withdraw UnSuccessful. Amount to be withdrawn greater than withdrawal limit for the day")
                     print(f"${amount} greater than withdrawal limit for the day")
@@ -164,14 +177,14 @@ class AccountTransaction(BankTransaction):
                 if amount > 0:
                     print(f"Insufficient funds. Current Balance available:{self.current_balance}")
             if self.current_balance != 0:
-                {bank_transact.withdraw_amount(j, self.service_id,i) for i,j in self.fee_dict.items()}
+                {self.withdraw_amount(j, self.service_id,i) for i,j in self.fee_dict.items()}
         except Exception as e:
             logging.error(e,exc_info=True)
 
 class LoanTransaction(AccountTransaction):
 
     def __init__(self,account_id,service_id,employee_id='SystemAdmin',customer_id='0',credit_score=0,amount=0.00,account_type='Car Loan'):
-        account_transact = AccountTransaction(account_id,service_id,employee_id,customer_id,credit_score,account_type)    
+        AccountTransaction.__init__(self,account_id,service_id,employee_id,customer_id,credit_score,account_type)    
         try:
             self.service_terms = bank_store.get_service_terms(self.service_id,'Loan')
             if self.service_terms[0]['ServiceType'] != self.account_type:
@@ -189,7 +202,8 @@ class LoanTransaction(AccountTransaction):
                             print(f"Loan Amount {amount} is greater than maximum loan amount {self.service_terms[0]['MaximumLoanAmount']} possible for this service offering")
                             logging.info(f"Loan Amount {amount} is greater than maximum loan amount {self.service_terms[0]['MaximumLoanAmount']} possible for this service offering")
                         else:
-                            bank_transact.withdraw_amount(self.original_balance, self.service_id)
+                            self.withdraw_amount(self.original_balance, self.service_id)
+                            self.new_account_indicator = False
                     logging.info(f"Loan Transaction Initiated for Account:{self.account_id}")
         except Exception as e:
             logging.error(e,exc_info=True)
@@ -205,10 +219,10 @@ class LoanTransaction(AccountTransaction):
                                                             intermediate_result)/(intermediate_result - 1))
             print(f"Equated Monthly Installment Amount:{monthly_installment}")
             logging.info(f"Equated Monthly Installment Amount:{monthly_installment}")
-
             self.monthly_payment['Monthly Interest Amount'] = (self.service_terms[0]['InterestRate']/1200)*principal_remaining
             self.monthly_payment['Monthly Principal Amount'] = monthly_installment - self.monthly_payment['Monthly Interest Amount']
-
+            print(f"Monthly Interest Amount:{self.monthly_payment['Monthly Interest Amount']}")
+            print(f"Monthly Principal Amount:{self.monthly_payment['Monthly Principal Amount']}")
             if not transaction_dict['monthly_payment'] or (transaction_dict['monthly_payment'] and transaction_dict['monthly_payment'] < monthly_installment):
                 if int(datetime.datetime.now().strftime("%Y")) == self.transaction_time.year and int(datetime.datetime.now().strftime("%m")) - int(self.transaction_time.month) < 2:
                     self.monthly_payment['Late Fees'] = 0 
@@ -218,12 +232,14 @@ class LoanTransaction(AccountTransaction):
         except Exception as e:
             logging.error(e,exc_info=True)
 
-    def deposit_amount(self, amount):
+    def deposit(self, amount):
         try:  
             self.calculate_monthly_payment()
-            {bank_transact.deposit_amount(j, self.service_id,i) for i,j in self.monthly_payment.items() if 'Fees' not in i } 
+            if amount > self.monthly_payment['Monthly Interest Amount'] + self.monthly_payment['Monthly Principal Amount']:
+                self.monthly_payment['Additional Principal Amount'] = amount - (self.monthly_payment['Monthly Interest Amount'] + self.monthly_payment['Monthly Principal Amount'])
+            {self.deposit_amount(j, self.service_id,i) for i,j in self.monthly_payment.items() if 'Fees' not in i } 
             if self.monthly_payment['Late Fees'] > 0:
-                bank_transact.withdraw_amount(self.monthly_payment['Late Fees'],self.service_id,'Late Fees')
+                self.withdraw_amount(self.monthly_payment['Late Fees'],self.service_id,'Late Fees')
         except Exception as e:
             logging.error(e,exc_info=True)
 
@@ -234,15 +250,19 @@ class LoanTransaction(AccountTransaction):
 #d = datetime.datetime.strftime(datetime.datetime.strptime('2022-06-02 14:59:56','%Y-%m-%d %H:%M:%S'),'%m')
 #print(int(d))           
 
-a = BankTransaction('Test',mass_insert=True)
-
-
+#a = BankTransaction('Test',mass_insert=True)
+##a = LoanTransaction('LS00000001','LS0002','E000000001','C000000006',450,20000,'Car Loan')
+#a = AccountTransaction('AS00000007','AS0005','E000000001','C000000005',700,'Savings')
+#a.deposit(10000)
+##a.get_current_balance(True)
+##a.calculate_monthly_payment()
+##a.get_latest_transactions(2)
 
         
-c = LoanTransaction('LS0000001','LS0004','E000000002','C000000003',750,250000,'Home Loan')
+#c = LoanTransaction('LS0000001','LS0004','E000000002','C000000003',750,250000,'Home Loan')
 #print(int(datetime.datetime.now().strftime("%m")))
 #print(c.balance_result[0]['transaction_created_date_time'].year)
-c.deposit_amount(5000)
+#c.deposit_amount(5000)
 #c.calculate_interest()
 #c.calculate_fees('AS0002',8)
 #c.get_current_balance()
