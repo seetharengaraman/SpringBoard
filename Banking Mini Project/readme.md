@@ -12,9 +12,9 @@ This module is to perform various bank transactions like creating new checking/s
 
 This module is used by Bank employees to enter required Customer and Account information and perform various transactions, choosing from the menu options. This project can be initiated by running the main.py (python3 main.py)
 
-There is an Output.docx file that provides results of sample scenarios covered by this program
+There is an Outputs.docx file that provides results of sample scenarios covered by this program
 
-There is also a PPT that holds the Class UML diagram and ER diagram. The same is also displayed below.
+There is also a presentation (.pptx file) that holds the Class UML diagram and ER diagram. The same is also displayed below.
 ![image](https://user-images.githubusercontent.com/66568505/177687645-e515b225-abde-4058-8507-063017dc5176.png)
 ![image](https://user-images.githubusercontent.com/66568505/177687688-5dda5517-d971-4fdd-8949-cd72196a5853.png)
 
