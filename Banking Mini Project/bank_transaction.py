@@ -245,26 +245,3 @@ class LoanTransaction(AccountTransaction):
 
     
         
-
-                
-#d = datetime.datetime.strftime(datetime.datetime.strptime('2022-06-02 14:59:56','%Y-%m-%d %H:%M:%S'),'%m')
-#print(int(d))           
-
-#a = BankTransaction('Test',mass_insert=True)
-##a = LoanTransaction('LS00000001','LS0002','E000000001','C000000006',450,20000,'Car Loan')
-#a = AccountTransaction('AS00000007','AS0005','E000000001','C000000005',700,'Savings')
-#a.deposit(10000)
-##a.get_current_balance(True)
-##a.calculate_monthly_payment()
-##a.get_latest_transactions(2)
-
-        
-#c = LoanTransaction('LS0000001','LS0004','E000000002','C000000003',750,250000,'Home Loan')
-#print(int(datetime.datetime.now().strftime("%m")))
-#print(c.balance_result[0]['transaction_created_date_time'].year)
-#c.deposit_amount(5000)
-#c.calculate_interest()
-#c.calculate_fees('AS0002',8)
-#c.get_current_balance()
-
-    
