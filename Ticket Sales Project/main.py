@@ -4,8 +4,8 @@ import csv
 def get_db_connection():
     connection = None
     try:
-        connection = mysql.connector.connect(user='srengaraman',
-        password='testDB123!',
+        connection = mysql.connector.connect(user='username',
+        password='password',
         host='127.0.0.1',
         port='3306',
         database='ticket_sales')
@@ -62,7 +62,7 @@ def query_popular_tickets(connection):
     cursor.execute(sql_statement)
     records = cursor.fetchall()
     cursor.close()
-    print('Here are the most popular tickets in the past month:')
+    print('Here are the most popular tickets:')
     for rec in records:
         print(f"- {rec[0]}")
 

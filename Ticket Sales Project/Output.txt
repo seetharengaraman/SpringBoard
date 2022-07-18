@@ -2,7 +2,7 @@
 Creating table
 Table ticket_sale Created
 Inserted 6 rows
-Here are the most popular tickets in the past month:
+Here are the most popular tickets:
 - Washington Spirits vs Sky Blue FC
 - The North American International Auto Show
 - Christmas Spectacular
