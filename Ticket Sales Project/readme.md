@@ -9,6 +9,7 @@ with data inserted from CSV into the table. Once data is inserted, top three mos
 
 Before executing, add the valid value for file_path_csv variable in main.py. This is where csv data is stored to be inserted into ticket_sale table.
 Once this is added and saved, execute using:
+
 python3 main.py
 
 Sample results are stored in Output.txt file
