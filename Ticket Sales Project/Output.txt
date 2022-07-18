@@ -1,0 +1,9 @@
+(ticketEnv) (base) xxx ticketEnv % python3 main.py
+Creating table
+Table ticket_sale Created
+Inserted 6 rows
+Here are the most popular tickets in the past month:
+- Washington Spirits vs Sky Blue FC
+- The North American International Auto Show
+- Christmas Spectacular
+(ticketEnv) (base) xxx ticketEnv % 
