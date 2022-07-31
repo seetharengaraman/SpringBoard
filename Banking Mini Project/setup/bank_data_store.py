@@ -36,7 +36,7 @@ class TZDateTime(sql.TypeDecorator):
 class BankSetup:
     def __init__(self,
                 file_name = 'Banking_Logs.txt',
-                connect_string = "mysql+pymysql://srengaraman:testDB123!@localhost/banking_system"
+                connect_string = "mysql+pymysql://user:password@localhost/banking_system"
                 ):
         self.file_format = '%(asctime)s %(module)s %(name)s.%(funcName)s +%(lineno)s: %(levelname)-2s [%(process)d] %(message)s'
         logging.basicConfig(level=logging.INFO,
