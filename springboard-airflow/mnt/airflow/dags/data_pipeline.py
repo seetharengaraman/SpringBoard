@@ -10,10 +10,13 @@ from datetime import date, datetime, timedelta
 import yfinance as yf
 import pandas as pd
 import os
+import pendulum
+
+local_tz = pendulum.timezone("America/Detroit")
 
 default_args = {
             "owner": "airflow",
-            "start_date": datetime(2022, 7, 30),
+            "start_date": datetime(2022, 8, 15,tzinfo=local_tz),
             "depends_on_past": False,
             "email_on_failure": False,
             "retries": 2, # retry twice
@@ -29,7 +32,7 @@ def download_stock_data(stock_name):
         start_date = date.today() 
     else:
         start_date = date.today() - timedelta(days=2)
-        end_date = start_date + timedelta(days=1)
+    end_date = start_date + timedelta(days=1)
     df = yf.download(stock_name, start=start_date, end=end_date, interval='1m')
     df.to_csv(file_path, header=False)
 
@@ -46,7 +49,7 @@ def get_last_stock_spread(**kwargs):
 
 
 dag = DAG(dag_id="marketvol",
-         schedule_interval="0 6 * * 1-5", # running at 6pm for weekdays
+         schedule_interval="0 18 * * 1-5", # running at 6pm for weekdays
          default_args=default_args,
          description='source Apple and Tesla data' )
 
