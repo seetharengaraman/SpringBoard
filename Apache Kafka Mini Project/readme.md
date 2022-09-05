@@ -5,3 +5,10 @@ reset.sh is used to clean up docker after container brought down. It is necessar
 
 
 https://developers.google.com/gmail/api/quickstart/python used to determine method to send email.
+We need credentials as part of Gmail API enablement (save as credentials.json, sample provided). Then run send_mail.py (with valid from and to email address, from address should be gmail id) once in local to generate token.json. Then move this file along with other files to the docker container before starting using docker-compose up
+
+Start Zookeeper and Kafka broker using:
+docker-compose -f docker-compose.kafka.yml up
+
+Subsequently start generator and detector containers using:
+docker-compose up
