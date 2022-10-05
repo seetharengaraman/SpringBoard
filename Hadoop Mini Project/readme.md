@@ -25,7 +25,7 @@
 
 b.  Create a new directory called test_data under "/" and another
     directory called input within test_data. Place everything under the
-    code and data folder in the github repository within the input
+    MapReducer code and data folder in the github repository within the input
     directory.
 
 c.  From virtual box shell, go to "/" directory and run following
