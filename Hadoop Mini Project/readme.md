@@ -1,3 +1,5 @@
+Hadoop Map Reduce Project
+
 1.  Used <https://www.youtube.com/watch?v=735yx2Eak48> to install
     Virtual Box and Cloudera HDP sandbox environment
 
@@ -43,3 +45,17 @@ c.  From virtual box shell, go to "/" directory and run following
 
 d.  Check output in Ambari UI under /test_data/output directory as shown
     in Output.docx file
+
+
+For resolving same requirement in spark, refer to the following within Spark Code folder:
+
+    i.  autoinc_spark.py Ð PySpark code which was placed in the /spark_project folder within the virtual box shell
+
+    ii. autoinc_spark.sh Ð Shell script to perform spark_submit (location of spark submit was identified within the shell using command: 
+		find /usr -name spark-submit
+
+    iii. output folder containing a csv file with the necessary result of count of accidents by make and year obtained from hdfs (Ambari UI Ð Files View - /test_data/output directory as mentioned in pyspark code)
+
+    iv. results.txt contains the output of spark-submit redirected from within shell script
+
+

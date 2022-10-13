@@ -1,0 +1,2 @@
+#!/bin/bash                                                                                                                                             
+/usr/bin/spark-submit /spark_project/autoinc_spark.py &> results.txt
