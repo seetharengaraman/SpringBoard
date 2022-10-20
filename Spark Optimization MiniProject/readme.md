@@ -30,44 +30,41 @@ month(\'creation_date\')).groupBy(\'question_id\',
 4.  For a data set of 110714 records, 200 partitions seemed a lot as
     seen below.
 
-![](media/image1.png){width="7.5in" height="1.2583333333333333in"}
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/200%20partitions.png)
 
 Set shuffle partitions to 30
 
 spark.conf.set(\"spark.sql.shuffle.partitions\",30)
 
-> ![](media/image2.png){width="7.5in" height="1.2590277777777779in"}
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/30%20partitions.png)
 
 Unoptimized query -- First part of scanning answer records taking 14.1
 sec (combination of tasks) with another 3.5 sec after shuffle during
 grouping/aggregation.
 
-> ![](media/image3.png){width="3.4071423884514433in"
-> height="7.554587707786527in"}
->
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/unoptimized%20query%20performance.png)
+
 > With repartition, scanning answer records from file takes 3.7 sec and
 > grouping/aggregation takes 11.3 sec
 >
-> ![](media/image4.png){width="3.859722222222222in" height="9.0in"}
+> ![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/Repartitioned%20query%20performance.png)
 >
 > With ensuring answers_month dataframe on the left side of the join,
 > its file scan reduced to 2.4 sec followed by grouping and aggregation
 > reducing to 8.1 sec (though questionsDF scanning increased to 2.4 sec
 > from 1.1 sec, overall reduction in time seen)
 >
-> ![](media/image5.png){width="3.7680555555555557in" height="9.0in"}
+> ![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/left%20join%20changed%20query%20performance.png)
 >
 > Now caching helped reduce the total time to a great extent (9s to 6s)
 >
-> ![](media/image6.png){width="3.3055555555555554in"
-> height="3.1944444444444446in"}
+> ![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/cache%20performance_1.png)
 >
-> ![](media/image7.png){width="7.5in" height="1.6097222222222223in"}
+> ![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/cache%20performance_2.png)
 >
 > Further reducing shuffle partition from 200 to 30 reduced to 4s from
 > 6s
 >
-> ![](media/image8.png){width="2.64915791776028in"
-> height="2.7039676290463692in"}
+> ![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/shuffle%20partition%20reduced%20performance_1.png)
 >
-> ![](media/image9.png){width="7.5in" height="1.6159722222222221in"}
+> ![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Spark%20Optimization%20MiniProject/Images/shuffle%20partition%20reduced%20performance_2.png)
