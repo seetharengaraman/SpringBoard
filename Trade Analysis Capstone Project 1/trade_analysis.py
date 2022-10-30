@@ -5,10 +5,12 @@ market data from multiple stock exchanges. The pipeline should maintain the sour
 structured format, organized by date. It also needs to produce analytical results that support
 business analysis.
 """
+from itertools import groupby
 from unicodedata import decimal
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
+from pyspark.sql import Window
 from decimal import Decimal
 import logging
 import json
@@ -119,7 +121,7 @@ class TradeAnalysis:
                 self.error_flag = 0
         try:
             trade_quote_df = spark.createDataFrame(common_data,self.common_schema)
-            #trade_quote_df.show(2)
+            trade_quote_df.show(20)
             trade_quote_df.write.partitionBy("partition").mode("overwrite").parquet("output/success")
             logging.info("Trade and Quote Analysis data written to parquet successfully")
         except Exception as e:
@@ -128,10 +130,46 @@ class TradeAnalysis:
             logging.info("Error data written to parquet")
             logging.error(e,exc_info=True)
         
+    def apply_correction(self,df):
+        try:
+            today = datetime.date.today()
+            self.date_str = today.strftime('%Y-%m-%d')
+            df_temp = df.groupBy( 'trade_dt','symbol', 'exchange', 'event_tm', 'event_seq_nb') \
+                        .agg(max('arrival_tm').alias('arrival_tm'))
+            df.createOrReplaceTempView("original")
+            df_temp.createOrReplaceTempView("temp")
+            df_final = spark.sql('SELECT o.* \
+                                    FROM original o INNER JOIN temp t \
+                                     ON o.trade_dt = t.trade_dt \
+                                    AND o.symbol = t.symbol \
+                                    AND o.exchange = t.exchange \
+                                    AND o.event_tm = t.event_tm \
+                                    AND o.event_seq_nb = t.event_seq_nb')
+        except Exception as e:
+            logging.error(e,exc_info=True)
+        finally:    
+            return df_final
+        
+    def end_of_day_trade(self):
+        trade_common = spark.read.parquet("output/success/partition=T")
+        trade_df = trade_common.select('trade_dt', 'symbol', 'exchange', 'event_tm',
+                                           'event_seq_nb','arrival_tm','trade_pr')
+        trade_corrected = self.apply_correction(trade_df)
+        trade_corrected.write.parquet("output/trade/trade_dt={}".format(self.date_str))
+    
+    def end_of_day_quote(self):
+        quote_common = spark.read.parquet("output/success/partition=Q")
+        quote_df = quote_common.select('trade_dt', 'symbol', 'exchange', 'event_tm',
+                                           'event_seq_nb','arrival_tm','bid_pr','bid_size',
+                                           'ask_pr','ask_size')
+        quote_corrected = self.apply_correction(quote_df)
+        quote_corrected.write.parquet("output/quote/quote_dt={}".format(self.date_str))
 
 
 if __name__ == '__main__':
     spark = SparkSession.builder.master('local').appName('TradeAnalysis').getOrCreate()
     sc = spark.sparkContext
     trade = TradeAnalysis('data/*/*/*')
-    trade.ingest_file()
+    #trade.ingest_file()
+    trade.end_of_day_trade()
+    trade.end_of_day_quote()
