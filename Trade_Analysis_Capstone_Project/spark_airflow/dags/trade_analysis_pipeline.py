@@ -68,7 +68,7 @@ default_args = {
         }
 
 with models.DAG(dag_id="TradeAnalysis",
-         schedule_interval="0 19 * * *", # running at 7pm for weekdays
+         schedule_interval="0 4 * * *", # running at 7pm for weekdays
          default_args=default_args,
          description='Ingest and Analyze Stock Market Data',
          max_active_runs=1,
