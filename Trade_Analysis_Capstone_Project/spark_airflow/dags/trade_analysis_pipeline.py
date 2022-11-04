@@ -18,7 +18,7 @@ local_tz = pendulum.timezone("America/Detroit")
 gcp_project_id = 'splendid-planet-367217'
 gcp_region = 'us-east1'
 gke_cluster = 'spark-airflow-cluster'
-dataproc_cluster = 'spark_airflow_dataproc'
+dataproc_cluster = 'spark-airflow-dataproc'
 bucket_name = 'trade_quote_analysis'
 
 VIRTUAL_CLUSTER_CONFIG = {
