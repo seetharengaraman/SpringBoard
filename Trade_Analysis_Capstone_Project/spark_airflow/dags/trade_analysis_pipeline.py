@@ -25,6 +25,7 @@ gcp_zone = 'us-east1-b'
 gke_cluster = 'spark-airflow-cluster'
 dataproc_cluster = 'spark-airflow-dataproc'
 bucket_name = 'trade_quote_analysis'
+service_account = 'ignoramus@splendid-planet-367217.iam.gserviceaccount.com'
 
 VIRTUAL_CLUSTER_CONFIG = {
     "kubernetes_cluster_config": {
@@ -80,6 +81,7 @@ with models.DAG(dag_id="TradeAnalysis",
         cluster_name=dataproc_cluster,
         project_id=gcp_project_id,
         region=gcp_region,
+        impersonation_chain=service_account,
         virtual_cluster_config=VIRTUAL_CLUSTER_CONFIG
     )
 
