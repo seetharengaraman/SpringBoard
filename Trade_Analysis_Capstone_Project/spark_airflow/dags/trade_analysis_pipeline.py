@@ -14,7 +14,7 @@ from airflow.providers.google.cloud.operators.dataproc import (
     DataprocDeleteClusterOperator,
     DataprocSubmitJobOperator,
 )
-from airflow.utils import trigger_rule
+from airflow.utils.trigger_rule import TriggerRule
 import pendulum
 from datetime import date, datetime, timedelta
 
@@ -66,34 +66,36 @@ default_args = {
             "region": "us-east1"
         }
 
-dag = DAG(dag_id="TradeAnalysis",
+with models.DAG(dag_id="TradeAnalysis",
          schedule_interval="0 18 * * 1-5", # running at 6pm for weekdays
          default_args=default_args,
-         description='Ingest and Analyze Stock Market Data' )
+         description='Ingest and Analyze Stock Market Data' 
+         ) as dag:
 
-create_cluster_in_gke = DataprocCreateClusterOperator(
-    task_id="create_cluster_in_gke",
-    cluster_name=dataproc_cluster,
-    project_id=gcp_project_id,
-    region=gcp_region,
-    virtual_cluster_config=VIRTUAL_CLUSTER_CONFIG
-)
+    create_cluster_in_gke = DataprocCreateClusterOperator(
+        task_id="create_cluster_in_gke",
+        cluster_name=dataproc_cluster,
+        project_id=gcp_project_id,
+        region=gcp_region,
+        virtual_cluster_config=VIRTUAL_CLUSTER_CONFIG
+    )
 
-ingest_data = DataprocSubmitJobOperator(
-    task_id="ingest_data", job=ingest_data_job, region=gcp_region, project_id=gcp_project_id
-)
+    ingest_data = DataprocSubmitJobOperator(
+        task_id="ingest_data", job=ingest_data_job, region=gcp_region, project_id=gcp_project_id
+    )
 
-trade_analysis = DataprocSubmitJobOperator(
-    task_id="trade_analysis", job=trade_analysis_job, region=gcp_region, project_id=gcp_project_id
-)
+    trade_analysis = DataprocSubmitJobOperator(
+        task_id="trade_analysis", job=trade_analysis_job, region=gcp_region, project_id=gcp_project_id
+    )
 
-delete_cluster = DataprocDeleteClusterOperator(
-    task_id="delete_cluster",
-    project_id=gcp_project_id,
-    cluster_name=dataproc_cluster,
-    region=gcp_region
-)
+    delete_cluster = DataprocDeleteClusterOperator(
+        task_id="delete_cluster",
+        project_id=gcp_project_id,
+        cluster_name=dataproc_cluster,
+        region=gcp_region,
+        trigger_rule=TriggerRule.ALL_DONE
+    )
 
 
-create_cluster_in_gke >> ingest_data >> trade_analysis >> delete_cluster
+    create_cluster_in_gke >> ingest_data >> trade_analysis >> delete_cluster    
 
