@@ -58,7 +58,7 @@ trade_analysis_job = {
 
 default_args = {
             "owner": "airflow",
-            "start_date": datetime(2022, 11, 2,tzinfo=local_tz),
+            "start_date": datetime(2022, 11, 6,tzinfo=local_tz),
             "depends_on_past": False,
             "email_on_failure": False,
             "retries": 2, # retry twice
