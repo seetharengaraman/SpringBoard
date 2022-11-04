@@ -9,7 +9,11 @@ from airflow import DAG
 #from airflow.operators.python_operator import PythonOperator
 #from airflow.operators.bash_operator import BashOperator
 from airflow import models
-from airflow.providers.google.cloud.operators import dataproc
+from airflow.providers.google.cloud.operators.dataproc import (
+    DataprocCreateClusterOperator,
+    DataprocDeleteClusterOperator,
+    DataprocSubmitJobOperator,
+)
 from airflow.utils import trigger_rule
 import pendulum
 from datetime import date, datetime, timedelta
