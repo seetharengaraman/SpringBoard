@@ -21,6 +21,7 @@ from datetime import date, datetime, timedelta
 local_tz = pendulum.timezone("America/Detroit")
 gcp_project_id = 'splendid-planet-367217'
 gcp_region = 'us-east1'
+gcp_zone = 'us-east1-b'
 gke_cluster = 'spark-airflow-cluster'
 dataproc_cluster = 'spark-airflow-dataproc'
 bucket_name = 'trade_quote_analysis'
@@ -28,10 +29,10 @@ bucket_name = 'trade_quote_analysis'
 VIRTUAL_CLUSTER_CONFIG = {
     "kubernetes_cluster_config": {
         "gke_cluster_config": {
-            "gke_cluster_target": f"projects/{gcp_project_id}/locations/{gcp_region}/clusters/{gke_cluster}",
+            "gke_cluster_target": f"projects/{gcp_project_id}/locations/{gcp_zone}/clusters/{gke_cluster}",
             "node_pool_target": [
                 {
-                    "node_pool": f"projects/{gcp_project_id}/locations/{gcp_region}/clusters/{gke_cluster}/nodePools/dp",  # noqa
+                    "node_pool": f"projects/{gcp_project_id}/locations/{gcp_zone}/clusters/{gke_cluster}/nodePools/dp",  # noqa
                     "roles": ["DEFAULT"],
                 }
             ],
