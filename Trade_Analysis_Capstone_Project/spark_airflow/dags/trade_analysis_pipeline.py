@@ -70,7 +70,8 @@ default_args = {
 with models.DAG(dag_id="TradeAnalysis",
          schedule_interval="0 18 * * 1-5", # running at 6pm for weekdays
          default_args=default_args,
-         description='Ingest and Analyze Stock Market Data' 
+         description='Ingest and Analyze Stock Market Data',
+         dagrun_timeout=timedelta(minutes=120) 
          ) as dag:
 
     create_cluster_in_gke = DataprocCreateClusterOperator(
