@@ -58,19 +58,20 @@ trade_analysis_job = {
 
 default_args = {
             "owner": "airflow",
-            "start_date": datetime(2022, 11, 6,tzinfo=local_tz),
+            "start_date": datetime(2022, 11, 4,tzinfo=local_tz),
             "depends_on_past": False,
             "email_on_failure": False,
-            "retries": 2, # retry twice
-            "retry_delay": timedelta(minutes=5), # five minutes interval
+            "retries": 1, 
+            "retry_delay": timedelta(minutes=30), # five minutes interval
             "project_id":"splendid-planet-367217",
             "region": "us-east1"
         }
 
 with models.DAG(dag_id="TradeAnalysis",
-         schedule_interval="0 18 * * 1-5", # running at 6pm for weekdays
+         schedule_interval="0 19 * * *", # running at 7pm for weekdays
          default_args=default_args,
          description='Ingest and Analyze Stock Market Data',
+         max_active_runs=1,
          dagrun_timeout=timedelta(minutes=120) 
          ) as dag:
 
