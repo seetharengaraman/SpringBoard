@@ -1,7 +1,7 @@
 """
 Example Airflow DAG that show how to create a Dataproc cluster in Google Kubernetes Engine.
 """
-from datetime import datetime
+from datetime import datetime,timedelta
 
 from airflow import models
 from airflow.providers.google.cloud.operators.dataproc import (
@@ -63,6 +63,7 @@ with models.DAG(
     start_date=datetime(2021, 1, 1),
     catchup=False,
     tags=['example'],
+    dagrun_timeout=timedelta(minutes=120) 
 ) as dag:
     create_gke_cluster = GKECreateClusterOperator(
         task_id="create_gke_cluster",
