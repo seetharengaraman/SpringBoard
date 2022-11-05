@@ -28,11 +28,12 @@ bucket_name = 'trade_quote_analysis'
 
 VIRTUAL_CLUSTER_CONFIG = {
     "kubernetes_cluster_config": {
+        "kubernetes_namespace": "airflow",
         "gke_cluster_config": {
             "gke_cluster_target": f"projects/{gcp_project_id}/locations/{gcp_zone}/clusters/{gke_cluster}",
             "node_pool_target": [
                 {
-                    "node_pool": f"projects/{gcp_project_id}/locations/{gcp_zone}/clusters/{gke_cluster}/nodePools/default-pool",  
+                    "node_pool": f"projects/{gcp_project_id}/locations/{gcp_zone}/clusters/{gke_cluster}/nodePools/dataproc-pool",  
                     "roles": ["DEFAULT"],
                 }
             ],
