@@ -11,7 +11,6 @@ from pyspark.sql.types import *
 from pathlib import Path
 import logging
 import datetime
-from cloud_setup import CloudSetup
 
 class TradeAnalysis:
     def __init__(self,data_path,output_path,trade_date):
@@ -95,13 +94,14 @@ class TradeAnalysis:
 
             quote_final_df = quote_final_df.na.fill(value=0.00,subset=['last_trade_pr','last_mov_avg_pr'])
             quote_final_df.write.mode("overwrite").parquet(self.output_path)
+            logging.info(f"Quote Data enriched with additional analytics written to parquet file successfully")
         except Exception as e:
             logging.error(e,exc_info=True)
 
 if __name__ == '__main__':
     spark = SparkSession.builder.master('local').appName('TradeAnalysis').getOrCreate()
     sc = spark.sparkContext
-    spark._jsc.hadoopConfiguration().set("google.cloud.auth.service.account.json.keyfile","token.json")
+    #spark._jsc.hadoopConfiguration().set("google.cloud.auth.service.account.json.keyfile","token.json")
     log_format = '%(asctime)s %(module)s %(name)s.%(funcName)s +%(lineno)s: %(levelname)-2s [%(process)d] %(message)s'
     logging.basicConfig(level=logging.INFO,
                         filename='Trade_Analysis.logs',
@@ -109,10 +109,8 @@ if __name__ == '__main__':
                         datefmt='%Y-%m-%d %H:%M:%S'
                         )
     bucket_name = 'trade_quote_analysis'
-    setup = CloudSetup(bucket_name)
     data_path = f"gs://{bucket_name}/output"
     output_path = f"gs://{bucket_name}/quote-trade-analytical"
     for i in ['2020-08-05','2020-08-06']:
         trade_analysis = TradeAnalysis(data_path,output_path,i)
-        setup.gcs_check_file_exists(2,i,'quote-trade-analytical')
     

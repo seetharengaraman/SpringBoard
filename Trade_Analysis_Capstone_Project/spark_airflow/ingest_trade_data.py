@@ -10,7 +10,6 @@ from decimal import Decimal
 import logging
 import json
 import datetime
-from cloud_setup import CloudSetup
 
 class IngestTradeData:
     def __init__(self,input_data_file,output_success_path,output_error_path):
@@ -170,9 +169,8 @@ if __name__ == '__main__':
                         datefmt='%Y-%m-%d %H:%M:%S'
                         )
     bucket_name = 'trade_quote_analysis'
-    setup = CloudSetup(bucket_name)
     spark = SparkSession.builder.master('local').appName('TradeAnalysis').getOrCreate()
-    spark._jsc.hadoopConfiguration().set("google.cloud.auth.service.account.json.keyfile","token.json")
+    #spark._jsc.hadoopConfiguration().set("google.cloud.auth.service.account.json.keyfile","token.json")
     sc = spark.sparkContext
     data_path = f"gs://{bucket_name}/data"
     output_path = f"gs://{bucket_name}/output"
@@ -184,4 +182,3 @@ if __name__ == '__main__':
     trade = IngestTradeData(original_data_file,file_processed_path,file_rejected_path)
     trade.end_of_day_trade(file_processed_path,eod_output_trade_path)
     trade.end_of_day_quote(file_processed_path,eod_output_quote_path)
-    setup.gcs_check_file_exists(3,'2020-08-05','quote')
