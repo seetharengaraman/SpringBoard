@@ -81,8 +81,7 @@ a certain exchange. See quote data below.
 
 ## Flow Diagram
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Trade_Analysis_Capstone_Project/TradeAnalysis.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Trade_Analysis_Capstone_Project/TradeAnalysis.png)
 
 ## 
 
@@ -90,8 +89,8 @@ https://github.com/seetharengaraman/SpringBoard/blob/main/Trade_Analysis_Capston
 
 ## Architecture
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Trade_Analysis_Capstone_Project/Architecture.png)
+
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Trade_Analysis_Capstone_Project/Architecture.png)
 
 ## Detailed Design
 
