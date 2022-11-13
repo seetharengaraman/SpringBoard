@@ -52,32 +52,7 @@ a certain exchange. See quote data below.
 
 **Trade data:**
 
-  **Column**              **Type**
-  ----------------------- ------------
-  Trade Date              Date
-  Record Type             Varchar(1)
-  Symbol                  String
-  Execution ID            String
-  Event Time              Timestamp
-  Event Sequence Number   Int
-  Exchange                String
-  Trade Price             Decimal
-  Trade Size              Int
-
-**Quote data:**
-
-  **Column**              **Type**
-  ----------------------- ------------
-  Trade Date              Date
-  Record Type             Varchar(1)
-  Symbol                  String
-  Event Time              Timestamp
-  Event Sequence Number   Int
-  Exchange                String
-  Bid Price               Decimal
-  Bid Size                Int
-  Ask Price               Decimal
-  Ask Size                Int
+ ![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Trade_Analysis_Capstone_Project/Trade%20and%20Quote%20Data.png)
 
 ## Flow Diagram
 
