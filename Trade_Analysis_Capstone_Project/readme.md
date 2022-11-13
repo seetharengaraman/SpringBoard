@@ -81,7 +81,8 @@ a certain exchange. See quote data below.
 
 ## Flow Diagram
 
-![](media/image1.png){width="6.5in" height="1.979861111111111in"}
+!\[alt text\](
+https://github.com/seetharengaraman/SpringBoard/blob/main/Trade_Analysis_Capstone_Project/TradeAnalysis.png)
 
 ## 
 
@@ -89,7 +90,8 @@ a certain exchange. See quote data below.
 
 ## Architecture
 
-![](media/image2.png){width="6.5in" height="3.6756944444444444in"}
+!\[alt text\](
+https://github.com/seetharengaraman/SpringBoard/blob/main/Trade_Analysis_Capstone_Project/Architecture.png)
 
 ## Detailed Design
 
