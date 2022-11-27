@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE `splendid-planet-367217.soil_om_analysis.process_soil_data`()
+CREATE OR REPLACE PROCEDURE `my-gcpproject-123445.soil_om_analysis.process_soil_data`()
 /* Processing raw agriculture and soil data for storing organic content incrementally every specific period of time thus monitoring the increase in organic content in areas/states/countries more involved in organic farming practices. This can further help in determining best practices*/
 BEGIN
     /* Collecting USA statewise soil organic matter profile incrementally along with total acres of land in state

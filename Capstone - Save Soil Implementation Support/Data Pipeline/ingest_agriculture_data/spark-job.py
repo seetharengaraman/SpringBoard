@@ -69,7 +69,7 @@ if __name__ == '__main__':
     #spark._jsc.hadoopConfiguration().set("google.cloud.auth.service.account.json.keyfile","/token.json")
     bucket='save_soil_analysis'
     auth_file = "gs://ingest_agriculture_data/auth/qs_api_key.json"
-    gcp_project='splendid-planet-367217'
+    gcp_project='my-gcpproject-123445'
     spark.conf.set('temporaryGcsBucket', bucket)
     spark.conf.set("viewsEnabled","true")
     spark.conf.set("materializationDataset","soil_raw_dataset")

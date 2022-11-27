@@ -109,7 +109,7 @@ if __name__ == '__main__':
     #.config("spark.jars.packages", "com.google.cloud.spark:spark-bigquery-with-dependencies_2.12:0.27.1") \
     #spark._jsc.hadoopConfiguration().set("google.cloud.auth.service.account.json.keyfile","/token.json")
     bucket='save_soil_analysis'
-    gcp_project='splendid-planet-367217'
+    gcp_project='my-gcpproject-123445'
     spark.conf.set('temporaryGcsBucket', bucket)
     spark.conf.set("viewsEnabled","true")
     spark.conf.set("materializationDataset","soil_raw_dataset")
