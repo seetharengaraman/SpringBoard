@@ -1,0 +1,9 @@
+{
+    "agri_bucket_name": "ingest_agriculture_data",
+    "dataset_id": "soil_om_analysis",
+    "phs_cluster": "spark-airflow-cluster",
+    "project_id": "splendid-planet-367217",
+    "region_name": "southamerica-east1",
+    "us_soil_bucket_name": "soil_organic_matter",
+    "world_soil_bucket_name": "world_soil_organic_matter"
+}

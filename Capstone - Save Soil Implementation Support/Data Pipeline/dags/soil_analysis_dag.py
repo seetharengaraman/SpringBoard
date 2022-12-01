@@ -122,6 +122,6 @@ with models.DAG(
         task_id="delete_world_soil_batch",
         batch_id="world-soil-batch-create",
     )
-    [ingest_agriculture_data,ingest_usa_soil_data,ingest_world_soil_data] >> process_soil_data_bigquery >> [delete_agri_batch,delete_usa_soil_batch,delete_world_soil_batch]
+    ingest_agriculture_data >> ingest_usa_soil_data >> ingest_world_soil_data >> process_soil_data_bigquery >> [delete_agri_batch,delete_usa_soil_batch,delete_world_soil_batch]
   
 

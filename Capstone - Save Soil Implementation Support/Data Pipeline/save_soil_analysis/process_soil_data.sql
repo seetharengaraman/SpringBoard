@@ -1,12 +1,12 @@
-CREATE OR REPLACE PROCEDURE `my-gcpproject-123445.soil_om_analysis.process_soil_data`()
+CREATE OR REPLACE PROCEDURE `splendid-planet-367217.soil_om_analysis.process_soil_data`()
 /* Processing raw agriculture and soil data for storing organic content incrementally every specific period of time thus monitoring the increase in organic content in areas/states/countries more involved in organic farming practices. This can further help in determining best practices*/
 BEGIN
     /* Collecting USA statewise soil organic matter profile incrementally along with total acres of land in state
     that uses organic farming methods  */
-    IF EXISTS(SELECT 1 FROM `soil_om_analysis.USA_STATEWISE_SOIL_ORGANIC_MATTER`) THEN
+    IF EXISTS(SELECT 1 FROM `soil_om_analysis.INFORMATION_SCHEMA.TABLES` WHERE table_name = 'USA_STATEWISE_SOIL_ORGANIC_MATTER') THEN
         INSERT INTO `soil_om_analysis.USA_STATEWISE_SOIL_ORGANIC_MATTER`
         SELECT current_date('America/New_York') AS ingestion_date,som.state_code,som.state_name,ulrd_total.year census_year,
-        COALESCE(ulrd_total.Value,0.0) AS total_land_in_acres,ulrd_organic.year organic_census_year,COALESCE(ulrd_organic.Value,0.0) organic_land_in_acres,OMRVg_p05,OMRVg_p10,OMRVg_p50,ROUND(OMRVg_mean,2) AS OMRVg_mean,OMRVg_p90,OMRVg_p95
+        COALESCE(ulrd_total.Value,0.0) AS total_land_in_acres,ulrd_organic.year organic_census_year,COALESCE(ulrd_organic.Value,0.0) organic_land_in_acres,ROUND((COALESCE(ulrd_organic.Value,0.0)/COALESCE(ulrd_total.Value,0.0))*100,2) organic_land_percentage,OMRVg_p05,OMRVg_p10,OMRVg_p50,ROUND(OMRVg_mean,2) AS OMRVg_mean,OMRVg_p90,OMRVg_p95
         FROM `soil_raw_dataset.US_STATE_SOIL_ORGANIC_MATTER_PROFILE` som
         INNER JOIN `soil_raw_dataset.US_AGRI_LAND_RAW_DATA` ulrd_total
         ON som.state_code = ulrd_total.state_alpha
@@ -15,12 +15,13 @@ BEGIN
         ON som.state_code = ulrd_organic.STATE_ALPHA
         AND ulrd_organic.short_desc = 'AG LAND, CROPLAND, ORGANIC - ACRES'
         WHERE ulrd_organic.year = (SELECT max(year) FROM `soil_raw_dataset.US_AGRI_LAND_RAW_DATA` WHERE short_desc = 'AG LAND, CROPLAND, ORGANIC - ACRES')
-        AND ulrd_total.year = (SELECT max(year) FROM `soil_raw_dataset.US_AGRI_LAND_RAW_DATA` WHERE short_desc = 'AG LAND, CROPLAND - ACRES');
+        AND ulrd_total.year = (SELECT max(year) FROM `soil_raw_dataset.US_AGRI_LAND_RAW_DATA` WHERE short_desc = 'AG LAND, CROPLAND - ACRES')
+        ORDER BY organic_land_percentage DESC;
     ELSE
         CREATE TABLE IF NOT EXISTS `soil_om_analysis.USA_STATEWISE_SOIL_ORGANIC_MATTER`
         AS
         SELECT current_date('America/New_York') AS ingestion_date,som.state_code,som.state_name,ulrd_total.year census_year,
-        COALESCE(ulrd_total.Value,0.0) AS total_land_in_acres,ulrd_organic.year organic_census_year,COALESCE(ulrd_organic.Value,0.0) organic_land_in_acres,OMRVg_p05,OMRVg_p10,OMRVg_p50,ROUND(OMRVg_mean,2) AS OMRVg_mean,OMRVg_p90,OMRVg_p95
+        COALESCE(ulrd_total.Value,0.0) AS total_land_in_acres,ulrd_organic.year organic_census_year,COALESCE(ulrd_organic.Value,0.0) organic_land_in_acres,ROUND((COALESCE(ulrd_organic.Value,0.0)/COALESCE(ulrd_total.Value,0.0))*100,2) organic_land_percentage,OMRVg_p05,OMRVg_p10,OMRVg_p50,ROUND(OMRVg_mean,2) AS OMRVg_mean,OMRVg_p90,OMRVg_p95
         FROM `soil_raw_dataset.US_STATE_SOIL_ORGANIC_MATTER_PROFILE` som
         INNER JOIN `soil_raw_dataset.US_AGRI_LAND_RAW_DATA` ulrd_total
         ON som.state_code = ulrd_total.state_alpha
@@ -29,7 +30,8 @@ BEGIN
         ON som.state_code = ulrd_organic.STATE_ALPHA
         AND ulrd_organic.short_desc = 'AG LAND, CROPLAND, ORGANIC - ACRES'
         WHERE ulrd_organic.year = (SELECT max(year) FROM `soil_raw_dataset.US_AGRI_LAND_RAW_DATA` WHERE short_desc = 'AG LAND, CROPLAND, ORGANIC - ACRES')
-        AND ulrd_total.year = (SELECT max(year) FROM `soil_raw_dataset.US_AGRI_LAND_RAW_DATA` WHERE short_desc = 'AG LAND, CROPLAND - ACRES');
+        AND ulrd_total.year = (SELECT max(year) FROM `soil_raw_dataset.US_AGRI_LAND_RAW_DATA` WHERE short_desc = 'AG LAND, CROPLAND - ACRES')
+        ORDER BY organic_land_percentage DESC;
     END IF;
 
     /* Collecting survey area map geography where organic content was measured in the US states */
@@ -48,29 +50,29 @@ BEGIN
 
     ALTER TABLE `soil_om_analysis.USA_STATE_SURVEY_MAP_AREA` DROP COLUMN survey_area_geometry;
 
-    /* Converting World countries map and World Soil map geometry from string to geography datatype */
+    /* Creating World countries map and World Soil map external table */
 
-    ALTER TABLE `soil_raw_dataset.HARMONIZED_WORLD_SOIL_MAP` ADD COLUMN IF NOT EXISTS map_unit_geometry GEOGRAPHY;
-    ALTER TABLE `soil_raw_dataset.WORLD_COUNTRIES_MAP` ADD COLUMN IF NOT EXISTS country_geometry GEOGRAPHY;
+    CREATE OR REPLACE EXTERNAL TABLE `soil_raw_dataset.HARMONIZED_WORLD_SOIL_MAP` OPTIONS (
+    format="NEWLINE_DELIMITED_JSON",
+    json_extension = 'GEOJSON',
+    uris = ['gs://world_soil_organic_matter/soil_data/HARMONIZED_WORLD_SOIL_MAP.json']
+    );
 
-    UPDATE `soil_raw_dataset.HARMONIZED_WORLD_SOIL_MAP`
-    SET map_unit_geometry = ST_GEOGFROMTEXT(geometry,make_valid => TRUE)
-    WHERE 1=1;
-
-    UPDATE `soil_raw_dataset.WORLD_COUNTRIES_MAP`
-    SET country_geometry = ST_GEOGFROMTEXT(geometry,make_valid => TRUE)
-    WHERE 1=1;
-
+    CREATE OR REPLACE EXTERNAL TABLE `soil_raw_dataset.WORLD_COUNTRIES_MAP` OPTIONS (
+      format="NEWLINE_DELIMITED_JSON",
+      json_extension = 'GEOJSON',
+      uris = ['gs://world_soil_organic_matter/soil_data/WORLD_COUNTRIES_MAP.json']
+    );
     /* Adding Soil Map geography to soil mapping units across the world along with associating country to the mapping units using countries map geometry with ST_INTERSECT Big Query Geography Function */
     CREATE OR REPLACE TABLE `soil_om_analysis.HARMONIZED_WORLD_SOIL_MAPPING_UNITS`
     AS
     SELECT wm.iso,wm.country,MU_GLOBAL AS global_map_unit_id,hs.SU_SYMBOL AS map_unit_symbol, 
-    ds.VALUE AS map_unit_description, dc.VALUE AS coverage,hm.map_unit_geometry
+    ds.VALUE AS map_unit_description, dc.VALUE AS coverage,hm.geometry
     FROM `soil_raw_dataset.HWSD_SMU` hs 
     INNER JOIN `soil_raw_dataset.D_COVERAGE` dc ON dc.CODE = hs.COVERAGE
     INNER JOIN `soil_raw_dataset.D_SYMBOL` ds ON ds.SYMBOL = hs.SU_SYMBOL
     LEFT JOIN `soil_raw_dataset.HARMONIZED_WORLD_SOIL_MAP` hm ON hm.DN = hs.MU_GLOBAL
-    INNER JOIN `soil_raw_dataset.WORLD_COUNTRIES_MAP` wm ON ST_INTERSECTS(hm.map_unit_geometry,wm.country_geometry) = TRUE;
+    INNER JOIN `soil_raw_dataset.WORLD_COUNTRIES_MAP` wm ON ST_INTERSECTS(hm.geometry,wm.geometry) = TRUE;
 
 /* Storing soil characteristics across the world expanding codes into descriptions using the configuration reference data */
     CREATE OR REPLACE TABLE `soil_om_analysis.HARMONIZED_WORLD_SOIL_DATA`
@@ -115,7 +117,7 @@ BEGIN
     ORDER BY hwsmu.country,hwsmu.global_map_unit_id,hwsd.SEQ,hwsd.SHARE;
 
 /* Collecting Country based soil organic matter profile incrementally to determine countries with best organic farming practices */
-  IF EXISTS(SELECT 1 FROM `soil_om_analysis.WORLD_COUNTRYWISE_SOIL_ORGANIC_CARBON`) THEN
+  IF EXISTS(SELECT 1 FROM `soil_om_analysis.INFORMATION_SCHEMA.TABLES` WHERE table_name = 'WORLD_COUNTRYWISE_SOIL_ORGANIC_CARBON') THEN
     INSERT INTO `soil_om_analysis.WORLD_COUNTRYWISE_SOIL_ORGANIC_CARBON`
     SELECT DISTINCT current_date('America/New_York') AS ingestion_date,iso,country,
     ROUND(PERCENTILE_CONT(top_soil.organic_carbon,0.05) OVER(PARTITION BY country),2) AS TOC_p05, 
