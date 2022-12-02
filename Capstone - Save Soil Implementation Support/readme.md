@@ -131,9 +131,9 @@ https://hub.arcgis.com/datasets/esri::world-countries-generalized/explore?locati
 
 ![alt text](<https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Total%20Acres.png>)
 
-![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20%20Save%20Soil%20Implementation%20Support/Organic%20Farm%20Expansion.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Farm%20Expansion.png)
 
-![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20%20Save%20Soil%20Implementation%20Support/Organic%20Matter%20profile.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Matter%20profile.png)
 
 **Future considerations:**
 
