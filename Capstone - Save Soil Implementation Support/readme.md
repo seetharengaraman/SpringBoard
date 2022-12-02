@@ -13,14 +13,11 @@ cusp of restoring soil health in the next 15-20 years if we take the
 right action now.  Major amount of soil can be restored by ensuring
 sustainable farming practices.
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Soil%20Degradation.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Soil%20Degradation.png)
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Save%20Soil1.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Save%20Soil1.png)
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Save%20Soil2.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Save%20Soil2.png)
 
 Hence this project aims at studying US Agricultural Land Use and
 determining:
@@ -89,15 +86,13 @@ https://hub.arcgis.com/datasets/esri::world-countries-generalized/explore?locati
 
 ## Flow Diagram
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Flow%20Diagram.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Flow%20Diagram.png)
 
 ## 
 
 ## Architecture
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Architecture.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Architecture.png)
 
 ## Detailed Design
 
@@ -134,14 +129,11 @@ https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20
 
 [**https://public.tableau.com/app/profile/seethalakshmi.rengaraman/viz/USStatewiseSoilOrganicMatterProfile/USStatewiseSoilOrganicMatterProfile**](https://public.tableau.com/app/profile/seethalakshmi.rengaraman/viz/USStatewiseSoilOrganicMatterProfile/USStatewiseSoilOrganicMatterProfile)
 
-!\[alt text\](
-<https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Total%20Acres.png>)
+![alt text](<https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Total%20Acres.png>)
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Farm%20Expansion.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20%20Save%20Soil%20Implementation%20Support/Organic%20Farm%20Expansion.png)
 
-!\[alt text\](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Matter%20profile.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20%20Save%20Soil%20Implementation%20Support/Organic%20Matter%20profile.png)
 
 **Future considerations:**
 
