@@ -35,7 +35,7 @@ class IngestAgriLandUseData:
                 key_dict = json.loads(string_value.decode("utf-8"))
                 token = key_dict["key"]
         url = 'http://quickstats.nass.usda.gov/api/api_GET/?key='+token
-        agri_data_url = url + '&source_desc=CENSUS' + '&sector_desc=ECONOMICS' + '&short_desc=AG%20LAND,%20CROPLAND%20-%20ACRES' + '&domain_desc=TOTAL' + '&agg_level_desc=STATE' + '&state_alpha=CA'
+        agri_data_url = url + '&source_desc=CENSUS' + '&sector_desc=ECONOMICS' + '&short_desc=AG%20LAND,%20CROPLAND%20-%20ACRES' + '&domain_desc=TOTAL' + '&agg_level_desc=STATE' 
         resp = requests.get(agri_data_url)
         agri_data = resp.json()
         #print(str(agri_data['data']))
