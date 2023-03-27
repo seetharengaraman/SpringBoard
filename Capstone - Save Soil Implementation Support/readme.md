@@ -7,7 +7,7 @@ The UN Convention to Combat Desertification (UNCCD) has
 that, unless we rapidly change how we manage our soils, 90% of it could
 become degraded by 2050 and result in a global food crisis. To avert
 this impending crisis and restore soil health, the Save Soil movement,
-initiated by Sadhguru,Â aims to increase organic content in soil to a
+initiated by Sadhguru,aims to increase organic content in soil to a
 minimum of 3-6% through policy changes across all nations. We are at the
 cusp of restoring soil health in the next 15-20 years if we take the
 right action now.Â  Major amount of soil can be restored by ensuring
@@ -108,9 +108,8 @@ https://hub.arcgis.com/datasets/esri::world-countries-generalized/explore?locati
 **Destination:**
 https://console.cloud.google.com/
 
-
 Big Query Tables (with Raw and transformed data):
-
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Raw%20and%20Transformed%20Data%20Tables.png)
 
 
 
