@@ -122,7 +122,7 @@ Big Query Tables (with Raw and transformed data):
 ## Architecture
 
 ![alt text](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Architecture.png)
+https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Save%20Soil%20Implementation%20Architecture.png)
 
 ## Detailed Design
 
