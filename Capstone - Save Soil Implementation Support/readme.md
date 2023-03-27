@@ -115,8 +115,7 @@ Big Query Tables (with Raw and transformed data):
 
 ## Flow Diagram
 
-![alt text](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Flow%20Diagram.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Save%20Soil%20Flow%20Diagram.png)
 
 ## 
 
