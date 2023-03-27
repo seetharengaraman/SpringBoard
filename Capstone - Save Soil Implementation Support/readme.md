@@ -160,19 +160,19 @@ US Data:
 
 [**https://public.tableau.com/views/USStatewiseSoilOrganicMatterProfile/USStatewiseSoilOrganicMatterProfile?:language=en-US&:display_count=n&:origin=viz_share_link**](https://public.tableau.com/views/USStatewiseSoilOrganicMatterProfile/USStatewiseSoilOrganicMatterProfile?:language=en-US&:display_count=n&:origin=viz_share_link)
 
+[**https://public.tableau.com/views/IncreaseinAgriculturelandareawithorganicproductionpracticesovercensusyears/IncreaseinOrganicAgricultureLandAreaovercensusyears_1?:language=en-US&:display_count=n&:origin=viz_share_link**](https://public.tableau.com/views/IncreaseinAgriculturelandareawithorganicproductionpracticesovercensusyears/IncreaseinOrganicAgricultureLandAreaovercensusyears_1?:language=en-US&:display_count=n&:origin=viz_share_link)
+
 World Data: 
 [**https://public.tableau.com/views/WorldSoilOrganicCarbonProfilebySoilType/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link**](https://public.tableau.com/views/WorldSoilOrganicCarbonProfilebySoilType/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link)
 
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20vs%20All%20production%20practices.png)
 
-![alt text](
-<https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Total%20Acres.png>)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Farm%20Expansion.png)
 
-![alt text](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Farm%20Expansion.png)
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Expansion%20of%20Organic%20Farm%20Lands.png)
 
-![alt text](
-https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Matter%20profile.png)
 
+![alt text](https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Matter%20profile.png)
 
 ![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/World%20soil%20data%20visualization.png)
