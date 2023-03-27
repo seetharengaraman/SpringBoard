@@ -7,19 +7,19 @@ The UN Convention to Combat Desertification (UNCCD) has
 that, unless we rapidly change how we manage our soils, 90% of it could
 become degraded by 2050 and result in a global food crisis. To avert
 this impending crisis and restore soil health, the Save Soil movement,
-initiated by Sadhguru,Â aims to increase organic content in soil to a
+initiated by Sadhguru,Ã‚Â aims to increase organic content in soil to a
 minimum of 3-6% through policy changes across all nations. We are at the
 cusp of restoring soil health in the next 15-20 years if we take the
-right action now.Â  Major amount of soil can be restored by ensuring
+right action now.Ã‚Â  Major amount of soil can be restored by ensuring
 sustainable farming practices.
 
-!\[alt text\](
+![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Soil%20Degradation.png)
 
-!\[alt text\](
+![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Save%20Soil1.png)
 
-!\[alt text\](
+![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Save%20Soil2.png)
 
 Hence this project aims at studying US Agricultural Land Use and
@@ -86,11 +86,11 @@ US Soil Organic Matter data (USDA):
 <https://sdmdataaccess.nrcs.usda.gov/Query.aspx>
 
 Sample query:
-SELECT saverest [Date Added],l.areasymbol [Area Symbol], l.areaname [Area Name],muname [Map Unit Name], compname [Component Name], comppct_r [Component Representative Percentage], ch.hzname [Horizon Name],CONCAT(hzdept_r * 0.39,'-',hzdepb_r * 0.39) [Depth in Inches],ch.om_l [Organic Matter Low],ch.om_r [Organic Matter RV],ch.om_h [Organic Matter High]ÊÊ
-FROM sacatalog sacÊ
-INNER JOIN legend l ON l.areasymbol = sac.areasymbol AND l.areasymbol IN ('MD601')Ê
-INNER JOIN mapunit mu ON mu.lkey = l.lkeyÊ
-LEFT OUTER JOIN component c ON c.mukey = mu.mukeyÊ
+SELECT saverest [Date Added],l.areasymbol [Area Symbol], l.areaname [Area Name],muname [Map Unit Name], compname [Component Name], comppct_r [Component Representative Percentage], ch.hzname [Horizon Name],CONCAT(hzdept_r * 0.39,'-',hzdepb_r * 0.39) [Depth in Inches],ch.om_l [Organic Matter Low],ch.om_r [Organic Matter RV],ch.om_h [Organic Matter High]ÃŠÃŠ
+FROM sacatalog sacÃŠ
+INNER JOIN legend l ON l.areasymbol = sac.areasymbol AND l.areasymbol IN ('MD601')ÃŠ
+INNER JOIN mapunit mu ON mu.lkey = l.lkeyÃŠ
+LEFT OUTER JOIN component c ON c.mukey = mu.mukeyÃŠ
 LEFT OUTER JOIN chorizon ch ON ch.cokey = c.cokey
 
 
@@ -111,20 +111,19 @@ https://console.cloud.google.com/
 
 Big Query Tables (with Raw and transformed data):
 
-DatasetTable NameDescriptionsoil_raw_datasetHARMONIZED_WORLD_SOIL_MAPWorld soil map unit geometry data. Converted from raster to geojsonsoil_raw_datasetHWSD_DATAWorld soil data with codes for various soil qualities. Description for those code values are present in the D_XXX tablessoil_raw_datasetHWSD_SMUWorld soil mapping unitssoil_raw_datasetUS_AGRI_LAND_RAW_DATAData from US Farms production practices (All vs Organic)soil_raw_datasetUS_SOIL_ORGANIC_MATTER_RAWUS Soil organic matter data at county levelsoil_raw_datasetUS_STATE_SOIL_ORGANIC_MATTER_PROFILERepresentative value of Soil Organic Matter at county level aggregated to state level along with various percentilessoil_raw_datasetUS_SURVEY_MAP_AREAUS Survey map geometry for each area symbol. There can be multiple soil map units within a survey areasoil_raw_datasetWORLD_COUNTRIES_MAPWorld countries geometry data obtained from below website in geojson format to determine country name corresponding to the world soil data
-https://hub.arcgis.com/datasets/esri::world-countries-generalized/explore?location=-0.598723%2C0.000000%2C2.88&showTable=true
-soil_om_analysisHARMONIZED_WORLD_SOIL_MAPPING_UNITSWorld soil mapping units along with country detailssoil_om_analysisHARMONIZED_WORLD_SOIL_DATAWorld soil data with description of the various soil qualities (instead of code values) linked with country detailssoil_om_analysisWORLD_COUNTRYWISE_SOIL_ORGANIC_CARBONWorld countrywise soil organic carbon values (top soil organic carbon and sub soil organic carbon) along with percentilessoil_om_analysisUSA_STATE_SURVEY_MAP_AREALinking USA survey map area to the US statessoil_om_analysisUSA_STATEWISE_SOIL_ORGANIC_MATTERUSA Statewise total farmland in acres, organic land in acresÊ and its corresponding soil organic matter content (based on census taken on specific years)soil_om_analysisHARMONIZED_WORLD_SOIL_TYPE_ORGANIC_CARBONWorld countrywise soil organic carbon values by soil type and area covered by the soil type in percentage within each country
+
+
 
 ## Flow Diagram
 
-!\[alt text\](
+![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Flow%20Diagram.png)
 
 ## 
 
 ## Architecture
 
-!\[alt text\](
+![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Architecture.png)
 
 ## Detailed Design
@@ -165,20 +164,20 @@ US Data:
 [**https://public.tableau.com/views/USStatewiseSoilOrganicMatterProfile/USStatewiseSoilOrganicMatterProfile?:language=en-US&:display_count=n&:origin=viz_share_link**](https://public.tableau.com/views/USStatewiseSoilOrganicMatterProfile/USStatewiseSoilOrganicMatterProfile?:language=en-US&:display_count=n&:origin=viz_share_link)
 
 World Data: 
-https://public.tableau.com/views/WorldSoilOrganicCarbonProfilebySoilType/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link
+[**https://public.tableau.com/views/WorldSoilOrganicCarbonProfilebySoilType/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link**](https://public.tableau.com/views/WorldSoilOrganicCarbonProfilebySoilType/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link)
 
-!\[alt text\](
+
+![alt text](
 <https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Total%20Acres.png>)
 
-!\[alt text\](
+![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Farm%20Expansion.png)
 
-!\[alt text\](
+![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/Organic%20Matter%20profile.png)
 
 
-
-!\[alt text\](
+![alt text](
 https://github.com/seetharengaraman/SpringBoard/blob/main/Capstone%20-%20Save%20Soil%20Implementation%20Support/World%20soil%20data%20visualization.png)
 
 
